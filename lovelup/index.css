@@ -1,0 +1,11 @@
+body {
+    background-image: url(img/back.jpeg);
+    background-size:cover;
+}
+
+h2 {
+    font-weight: bold;
+    font-family: "Roboto", sans-serif;
+    color: aliceblue;
+
+}
