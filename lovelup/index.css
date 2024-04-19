@@ -1,11 +1,10 @@
 body {
     background-image: url(img/back.jpeg);
-    background-size:cover;
+    background-size: 100%;
 }
 
 h2 {
-    font-weight: bold;
-    font-family: "Roboto", sans-serif;
+    font-family: "Google Sans", sans-serif;
     color: aliceblue;
 
 }

@@ -7,3 +7,9 @@ input {
     margin-bottom: 10px;
     
 }
+
+p {
+    font-family: "Google Sans", sans-serif;
+    font-weight: bold;
+    color: rgb(73, 73, 73);
+}
