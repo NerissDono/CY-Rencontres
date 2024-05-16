@@ -10,38 +10,6 @@
 </head>
 
 <body>
-    <?php
-
-    $servername = "localhost";
-    $username = "root";
-    $mdp = "";
-
-    try {
-        $bdd = new PDO("mysql:host=$servername; dbname=lovelup", $username, $mdp);
-        $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        //echo "Connexion Réussie";
-    } catch (PDOException $e) {
-        echo "" . $e->getMessage() . "";
-    }
-    if (isset($_POST["ok"])) {
-        $name = $_POST["username"];
-        $email = $_POST["email"];
-        $password = $_POST["password"];
-        $date = date("Y-m-d H:i:s");
-        $requete = $bdd->prepare("INSERT INTO users VALUES (0, :username, :email, :password, :date)");
-        $requete->execute(
-            array(
-                "username" => $name,
-                "email" => $email,
-                "password" => $password,
-                "date" => $date
-            )
-        );
-        header("Location: registersuccess.html");
-        exit();
-    }
-    ?>
-
     <!-- le css n'etait pas appliqué au rechargement de la page après l'injection du php donc on ajoute le css ici au lieu du fichier externe-->
     <style>
         p {
@@ -51,18 +19,31 @@
         }
     </style>
 
+    <?php
+        include('../../src/bin/account/createAccount.php');
+    ?>
+
     <form action="" method="post">
-        <label>Pseudonyme</label> <input maxlength="50" placeholder="Enter username" name="username" required>
+        <label>Nom</label> <input maxlength="50" placeholder="Votre nom" name="lastname" required>
+        <br>
+        <label>Prénom</label> <input maxlength="50" placeholder="Votre prénom" name="name" required>
+        <br>
+        <label>Date de naissance</label> <input type="date" placeholder="mm/dd/yyyy" name="birthdate" required>
         <br>
         <label>E-Mail</label> <input type="email" placeholder="Enter email" name="email" required>
         <br>
         <label>Mot de passe:</label> <input type="password" maxlength="50" placeholder="Enter password" name="password"
             required>
         <br>
-        <button type="submit" value="register" name="ok">Login</button>
+        <button type="submit" value="register" name="ok">S'inscrire</button>
     </form>
 
-
+<?php
+    if (isset($_POST["ok"]))
+    {
+        createAccount($_POST['name'], $_POST['lastname'], $_POST['birthdate'], $_POST['email'], $_POST['password']);
+    }
+?>
 
 </body>
 
