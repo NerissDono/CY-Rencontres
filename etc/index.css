@@ -1,0 +1,10 @@
+body {
+    background-image: url(/data/img/back.jpeg);
+    background-size: 100%;
+}
+
+h2 {
+    font-family: "Google Sans", sans-serif;
+    color: aliceblue;
+
+}
