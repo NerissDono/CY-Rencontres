@@ -5,7 +5,6 @@ function createAccount($name, $lastname, $birthdate, $email, $password)
 {
     $email = strtolower($email); //en cas de problèmz de saisie lors de l'inscription
     $dir = "../../data/users/" . $email;
-    echo $birthdate;
     //Vérifie si le compte existe déjà et la sécurité mot de passe
     if (!file_exists($dir)){
         if (strlen($password) >= 6 && preg_match('/[a-z]/', $password) && preg_match('/[A-Z]/', $password) && preg_match('/[0-9]/', $password) && preg_match('/[^a-zA-Z0-9]/', $password))

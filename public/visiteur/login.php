@@ -31,7 +31,7 @@
         loginAccount($_POST["email"], $_POST["password"]);
         if (isset($_SESSION["login"]))
         {
-            header(Location:"../utilisateur/page.html");
+            echo "<script>window.location.replace('../utilisateur/user.html');</script>";
         }
     }
 ?>
