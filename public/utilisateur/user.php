@@ -1,3 +1,5 @@
+<?php session_start();?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,8 +8,9 @@
     <title>Accueil Utilisateur</title>
 </head>
 <body>
+    
     <header>
-        <h1>Bienvenue sur notre site de rencontre</h1>
+        <h1>Bienvenue sur notre site de rencontres</h1>
     </header>
 
     <main>

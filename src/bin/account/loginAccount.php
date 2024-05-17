@@ -19,7 +19,13 @@ function loginAccount($email, $password)
             echo "<span class='' >Connexion reussie</span>";
 
             //Connexion au compte
-            $_SESSION['login'] = $email;
+            $_SESSION["userprofile"] = [
+                'email'=> $email,
+                'password'=> $password,
+                'birthade' => $fileContent[2],
+                'lastname'=> $fileContent[0],
+                'name'=> $fileContent[1]
+            ];
         }
         else
         {

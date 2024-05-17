@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -29,9 +31,9 @@
     if(isset($_POST["ok"]))
     {
         loginAccount($_POST["email"], $_POST["password"]);
-        if (isset($_SESSION["login"]))
+        if (isset($_SESSION["userprofile"]))
         {
-            echo "<script>window.location.replace('../utilisateur/user.html');</script>";
+            echo "<script>window.location.replace('../utilisateur/user.php');</script>";
         }
     }
 ?>

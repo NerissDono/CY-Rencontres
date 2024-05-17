@@ -18,6 +18,11 @@ function createAccount($name, $lastname, $birthdate, $email, $password)
                 fwrite($file, $email ."\n");
                 fwrite($file, password_hash($password, PASSWORD_DEFAULT). "\n");
                 fclose($file);
+
+                //inscription réussie
+                echo "<div><p>Merci de vous être inscrit, tout s'est déroulé comme prévu !<br> 
+                Vous pouvez dès à présent vous connecter à Lovel-Up pour rencontrer des personnes partageant les mêmes intérêts que vous dans la rubrique <a href='./login.php'>Se connecter<a> </p></div>";
+    
             }
             else
             {
