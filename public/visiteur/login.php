@@ -9,34 +9,28 @@
     <title>Lovel-Up</title>
 </head>
 
-<?php
-    include ('../../src/bin/account/loginAccount.php');
-?>
-
 <body>
 
     <form action="" method="post">
         <label>E-Mail</label> <input type="email" placeholder="Enter email" name="email" required>
         <br>
-        <label>Mot de passe:</label> <input type="password" maxlength="50" placeholder="Enter password" name="password"
-            required>
+        <label>Mot de passe:</label> <input type="password" maxlength="50" placeholder="Enter password" name="password" required>
         <br>
         <button type="submit" value="register" name="ok">Login</button>
     </form>
 
-<?php
+    <?php
+        include ('../../src/bin/account/loginAccount.php');
 
-    //connexion
-
-    if(isset($_POST["ok"]))
-    {
-        loginAccount($_POST["email"], $_POST["password"]);
-        if (isset($_SESSION["userprofile"]))
+        // vérifie l'envoi du formulaire avant la redirection
+        if (isset($_POST["ok"]))
         {
-            echo "<script>window.location.replace('../utilisateur/user.php');</script>";
+            if (loginAccount($_POST["email"], $_POST["password"]))
+            {
+                echo "<script>window.location.replace('../utilisateur/user.php');</script>";
+            }
         }
-    }
-?>
+    ?>
 
 </body>
 

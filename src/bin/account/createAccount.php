@@ -40,5 +40,3 @@ function createAccount($name, $lastname, $birthdate, $email, $password)
         echo "<span class = ''>Ce compte existe déjà ! Connectez vous avec votre email et votre mot de passe <a href='../../../public/visiteur/login.php' > ici </a> </span>";
     }
 }
-
-?>

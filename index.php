@@ -7,25 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lovel-Up</title>
     <link rel="stylesheet" href="/etc/index.css">
+    <?php include('src/element/header.html');?> 
 </head>
 
 <body>
-    <header>
-        <a href="#"><img src="/data/img/logo.png" alt="Lovel-Up"></a>
-        <nav id="menu">
-            <button><a href="/public/visiteur/register.php">S'inscrire / Se connecter</a></button>
-            <button><a href="/public/visiteur/subscribe.html">Abonnements</a></button>
-            <button><a href="#about">A propos</a></button>
-        </nav>
-    </header>
 
-    <div class="main-page">
+    <div class="main-content">
 
-        <div>
-            <h2 id="subscriptions">Nos abonnements</h2>
-            hello
+        <div class="slogan">
+            <br><br><br><br><br><br><br><br><br><br><br>
+            <p>Meet gamers around you</p>
+            <br><br><br><br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br><br><br><br>
         </div>
     </div>
+
+    <footer style="color:lightgrey; font-size: 17px; background-color: rgb(10, 24, 29); padding: 7px;">
+        <p>
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontresCeci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+            Ceci est un footer de site de rencontresCeci est un footer de site de rencontres
+            Ceci est un footer de site de rencontres
+        </p>
+    </footer>
 
 </body>
 
