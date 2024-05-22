@@ -18,10 +18,19 @@ header {
     background-color: rgb(255, 154, 147);
     background-size: cover;
 }
+.logo {
+    display: flex;
+    align-items: center;
+}
+.logo img {
+    width: 120px;
+    height: auto;
+    margin-right: 15px;
+}
 
 .navbar {
     position: absolute;
-    padding: 50px;
+    padding: 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -44,4 +53,5 @@ header {
 
 .navbar .nav-links ul li {
     margin: 0 30px;
+    font-size: larger;
 }

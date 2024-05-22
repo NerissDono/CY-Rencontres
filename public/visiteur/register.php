@@ -24,6 +24,8 @@
     ?>
 
     <form action="" method="post">
+        <label>Pseudonyme</label> <input maxlength="50" placeholder="Votre pseudonyme" name="id" required>
+        <br>
         <label>Nom</label> <input maxlength="50" placeholder="Votre nom" name="lastname" required>
         <br>
         <label>Prénom</label> <input maxlength="50" placeholder="Votre prénom" name="name" required>
@@ -41,7 +43,7 @@
 <?php
     if (isset($_POST["ok"]))
     {
-        createAccount($_POST['name'], $_POST['lastname'], $_POST['birthdate'], $_POST['email'], $_POST['password']);
+        createAccount($_POST['id'], $_POST['name'], $_POST['lastname'], $_POST['birthdate'], $_POST['email'], $_POST['password']);
     }
 ?>
 

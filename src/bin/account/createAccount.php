@@ -1,7 +1,7 @@
 <?php
 
 //Fonction pour l'enregistrement d'un utilisateur
-function createAccount($name, $lastname, $birthdate, $email, $password)
+function createAccount($id, $name, $lastname, $birthdate, $email, $password)
 {
     $email = strtolower($email); //en cas de problèmz de saisie lors de l'inscription
     $dir = "../../data/users/" . $email;
@@ -12,6 +12,7 @@ function createAccount($name, $lastname, $birthdate, $email, $password)
             if(mkdir($dir))
             {
                 $file= fopen($dir .'/profile.txt','w');
+                fwrite($file, $id . "\n");
                 fwrite($file, $lastname . "\n");
                 fwrite($file, $name ."\n");
                 fwrite($file, $birthdate ."\n");
