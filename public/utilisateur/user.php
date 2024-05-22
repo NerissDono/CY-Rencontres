@@ -1,4 +1,21 @@
-<?php session_start();?>
+<?php 
+
+session_start();
+
+//affectation des champs publics du profil
+
+$pseudo = $_SESSION['id'];
+$password = $_SESSION['password'];
+$birthdate = $_SESSION['birthdate'];
+$gender = $_SESSION['gender'];
+if (isset($_SESSION['height'])) { $hegiht = $_SESSION['height']; }
+if (isset($_SESSION['bio'])) { $bio = $_SESSION['bio']; }
+
+//affectation des champs privés du profil
+
+$lastname = $_SESSION['lastname'];
+$name = $_SESSION['name'];
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -21,25 +38,13 @@
                 <form id="publicForm">
                     <img id="logo" src="../../data/img/logo.png" alt="mehdi"/><br>
                     <label for="pseudo">Pseudonyme:</label>
-                    <input type="text" id="pseudo" name="pseudo" disabled><br>
-                    <label for="sexe">Sexe:</label>
-                    <input type="text" id="sexe" name="sexe" disabled><br>
+                    <input type="text" id="pseudo" name="pseudo" value="<?php echo htmlspecialchars($pseudo); ?>" disabled><br>
+                    <label for="sexe">Genre</label>
+                    <input type="text" id="sexe" name="sexe" value="<?php echo htmlspecialchars($gender);?>"disabled><br>
                     <label for="naissance">Date de naissance:</label>
-                    <input type="text" id="naissance" name="naissance" disabled><br>
-                    <label for="profession">Profession:</label>
-                    <input type="text" id="profession" name="profession" disabled><br>
-                    <label for="residence">Lieu de résidence:</label>
-                    <input type="text" id="residence" name="residence" disabled><br>
-                    <label for="situation">Situation:</label>
-                    <input type="text" id="situation" name="situation" disabled><br>
+                    <input type="text" id="naissance" name="naissance" value="<?php echo htmlspecialchars($birthdate);?>" disabled><br>
                     <label for="taille">Taille:</label>
                     <input type="text" id="taille" name="taille" disabled><br>
-                    <label for="poids">Poids:</label>
-                    <input type="text" id="poids" name="poids" disabled><br>
-                    <label for="yeux">Couleur yeux:</label>
-                    <input type="text" id="yeux" name="yeux" disabled><br>
-                    <label for="cheveux">Couleur cheveux:</label>
-                    <input type="text" id="cheveux" name="cheveux" disabled><br>
                     <label for="bio">Bio:</label>
                     <textarea id="bio" name="bio" disabled></textarea><br>
                     <input type="button" value="Modifier" onclick="modifierProfil('publicForm')">
@@ -49,12 +54,12 @@
             <div id="privateSection" style="display: none;">
                 <h3>Informations Privées</h3>
                 <form id="privateForm">
-                    <label for="nom">Véritable Nom:</label>
-                    <input type="text" id="nom" name="nom" disabled><br>
-                    <label for="adresse">Adresse:</label>
-                    <input type="text" id="adresse" name="adresse" disabled><br>
+                    <label for="lastname">Nom:</label>
+                    <input type="text" id="nom" name="lastname" value="<?php echo htmlspecialchars($lastname)?>" disabled><br>
+                    <label for="name">Prénom:</label>
+                    <input type="text" id="prénom" name="name" value="<?php echo htmlspecialchars($name)?>" disabled><br>
                     <label for="password">Mot de Passe:</label>
-                    <input type="password" id="password" name="password" disabled><br>
+                    <input type="password" id="password" name="password" value="<?php echo htmlspecialchars($password)?>" disabled><br>
                     <input type="button" value="Modifier" onclick="modifierProfil('privateForm')">
                     <input type="submit" value="Enregistrer les informations privées" style="display: none;">
                 </form>
@@ -91,16 +96,6 @@
     </footer>
 
     <script>
-        function chargerProfil(email, motDePasse) {
-            // Insérez ici la fonction fetch pour récupérer le profil à partir du fichier ou du localStorage
-        }
-
-        window.onload = function() {
-            // Supposons que vous avez les variables email et motDePasse définies avec les valeurs appropriées
-            const email = "email1";
-            const motDePasse = "motDePasse1";
-            chargerProfil(email, motDePasse);
-        };
 
         function modifierProfil(formId) {
             // Activer les champs pour permettre la modification

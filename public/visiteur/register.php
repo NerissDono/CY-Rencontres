@@ -30,11 +30,16 @@
         <br>
         <label>Prénom</label> <input maxlength="50" placeholder="Votre prénom" name="name" required>
         <br>
+        <label>Genre</label> <select name="gender">
+            <option value="Homme">Homme</option>
+            <option value="Femme">Femme</option>
+            <option value="Autre / Non spécifié">Non spécifié</option>
+        </select>
         <label>Date de naissance</label> <input type="date" placeholder="mm/dd/yyyy" name="birthdate" required>
         <br>
         <label>E-Mail</label> <input type="email" placeholder="Enter email" name="email" required>
         <br>
-        <label>Mot de passe:</label> <input type="password" maxlength="50" placeholder="Enter password" name="password"
+        <label>Mot de passe</label> <input type="password" maxlength="50" placeholder="Enter password" name="password"
             required>
         <br>
         <button type="submit" value="register" name="ok">S'inscrire</button>
@@ -43,7 +48,7 @@
 <?php
     if (isset($_POST["ok"]))
     {
-        createAccount($_POST['id'], $_POST['name'], $_POST['lastname'], $_POST['birthdate'], $_POST['email'], $_POST['password']);
+        createAccount($_POST['id'], $_POST['gender'], $_POST['name'], $_POST['lastname'], $_POST['birthdate'], $_POST['email'], $_POST['password']);
     }
 ?>
 

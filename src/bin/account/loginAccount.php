@@ -14,17 +14,18 @@ function loginAccount($email, $password)
     if (file_exists($dir))
     {
         $fileContent = getInfo($dir . "/profile.txt");
-        if (password_verify($password, $fileContent[4]))
+        if (password_verify($password, $fileContent[6]))
         {
             // lance la session et affecte les variables de session
             session_start();
-            $_SESSION["userprofile"] = [
-                'email' => $email,
-                'password' => $password,
-                'birthdate' => $fileContent[2],
-                'lastname' => $fileContent[0],
-                'name' => $fileContent[1]
-            ];
+            $_SESSION["id"] = $fileContent[0];
+            $_SESSION["gender"] = $fileContent[1];
+            $_SESSION["email"] = $email;
+            $_SESSION["password"] = $password;
+            $_SESSION["birthdate"] = $fileContent[4];
+            $_SESSION["lastname"] = $fileContent[2];
+            $_SESSION["name"] = $fileContent[3];
+
             return true;
         }
         else
