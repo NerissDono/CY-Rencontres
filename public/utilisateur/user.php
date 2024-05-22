@@ -8,7 +8,7 @@ $pseudo = $_SESSION['id'];
 $password = $_SESSION['password'];
 $birthdate = $_SESSION['birthdate'];
 $gender = $_SESSION['gender'];
-if (isset($_SESSION['height'])) { $hegiht = $_SESSION['height']; }
+if (isset($_SESSION['height'])) { $height = $_SESSION['height']; }
 if (isset($_SESSION['bio'])) { $bio = $_SESSION['bio']; }
 
 //affectation des champs privés du profil
@@ -29,8 +29,6 @@ $name = $_SESSION['name'];
     <header>
         <h1>Bienvenue sur notre site de rencontres</h1>
     </header>
-
-    <main>
         <section id="profil">
             <h2>Mon Profil</h2>
             <div id="publicSection">
@@ -43,12 +41,12 @@ $name = $_SESSION['name'];
                     <input type="text" id="sexe" name="sexe" value="<?php echo htmlspecialchars($gender);?>"disabled><br>
                     <label for="naissance">Date de naissance:</label>
                     <input type="text" id="naissance" name="naissance" value="<?php echo htmlspecialchars($birthdate);?>" disabled><br>
-                    <label for="taille">Taille:</label>
-                    <input type="text" id="taille" name="taille" disabled><br>
-                    <label for="bio">Bio:</label>
+                    <label for="taille">Taille (cm):</label>
+                    <input type="number" id="taille" name="taille" disabled><br>
+                    <label for="bio">Bio (Décrivez-vous) :</label>
                     <textarea id="bio" name="bio" disabled></textarea><br>
                     <input type="button" value="Modifier" onclick="modifierProfil('publicForm')">
-                    <input type="submit" value="Enregistrer" style="display: none;">
+                    <input type="submit" value="Enregistrer" name="editPublic" style="display: none;">
                 </form>
             </div>
             <div id="privateSection" style="display: none;">
@@ -66,6 +64,10 @@ $name = $_SESSION['name'];
             </div>
             <button onclick="togglePrivateSection()">Afficher les Informations Privées</button>
         </section>
+
+    <?php 
+        
+    ?>
 
         <section id="recherche">
             <h2>Recherche de Profils</h2>
@@ -89,7 +91,6 @@ $name = $_SESSION['name'];
             </ul>
             <button onclick="choisirAbonnement()">Choisir un Abonnement</button>
         </section>
-    </main>
 
     <footer>
         <p>&copy; 2024 CY Meet</p>
