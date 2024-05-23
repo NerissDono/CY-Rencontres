@@ -5,42 +5,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lovel-Up</title>
+    <title>Cupid-Quest</title>
     <link rel="stylesheet" href="/etc/index.css">
-    <?php include('src/element/header.html');?> 
+    
 </head>
 
 <body>
+    <?php
+        include('src/element/header.html')
+    ?>
 
     <div class="main-content">
 
         <div class="slogan">
-            <br><br><br><br><br><br><br><br><br><br><br>
-            <p>Meet gamers around you</p>
-            <br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br><br>
+            <p>U want to play, let's play</p>
+            <br><br><br>
+            <div class="container"><div class="register-button"><a class="register-link" href="../../public/visiteur/register.php">Créer son compte</a></div></div>
+            <br><br><br><br><br><br><br><br><br>
         </div>
+
     </div>
 
-    <footer style="color:lightgrey; font-size: 17px; background-color: rgb(10, 24, 29); padding: 7px;">
-        <p>
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontresCeci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-            Ceci est un footer de site de rencontresCeci est un footer de site de rencontres
-            Ceci est un footer de site de rencontres
-        </p>
+    <footer>
+        <div class="footer-index">
+
+            <p>
+                Hé, t’es gamer et célibataire ? Tu cherches l'amour ou des amis pour jouer ?
+                C’est sur Cupid Quest que ça se passe.
+                Déjà des milliers de rencontres entre gamers:
+                c’est le meilleur endroit pour trouver ton/ta prochain(e) coéquipier/coéquipière. 
+                Soyons réalistes, les choses ont bien changé aujourd’hui… 
+                Presque tout le monde se rencontre en ligne et à travers les jeux. 
+                Avec Cupid Quest, le site de rencontres gratuit le plus populaire pour<br> les gamers, 
+                des milliers d'autres gamers n’attendent plus que de rencontrer quelqu’un comme toi.
+                <br>&copy; 2024 Cupid Quest - Leo/Yuno
+            </p>
+
+        </div>
     </footer>
 
 </body>

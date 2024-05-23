@@ -15,6 +15,48 @@ body {
     align-items: center;
     font-size: 80px;
     color: rgb(60, 60, 60);
-    
-    
+        
+}
+
+.register-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom right, #EF4765, rgb(255, 154, 147));
+    border-radius: 45px;
+    padding: 0 1rem;
+    white-space: nowrap;
+    height: 75px;
+    width: 13em;
+}
+
+.register-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 2.5;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+}
+
+.footer-index p{
+    display: flex;
+    justify-content: none;
+    padding: 10px;
+    color:aliceblue;
+    font-size: 16px;
+}
+
+footer{
+    color:lightgrey;
+    font-size: 17px;
+    background-color: rgb(10, 24, 29);
+    background-size:cover;
+    padding: 7px;
 }

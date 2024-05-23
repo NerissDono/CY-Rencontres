@@ -9,14 +9,12 @@
 
 body {
     font-family: 'Poppins';
-
+    width: 100%;
 }
 
 header {
     height: 18vh;
-    width: 100vw;
-    background-color: rgb(255, 154, 147);
-    background-size: cover;
+    background: linear-gradient(to bottom right, #EF4765, rgb(255, 154, 147));
 }
 .logo {
     display: flex;
@@ -29,7 +27,6 @@ header {
 }
 
 .navbar {
-    position: absolute;
     padding: 25px;
     display: flex;
     justify-content: space-between;

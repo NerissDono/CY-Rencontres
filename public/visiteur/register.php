@@ -7,17 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lovel-Up</title>
     <link rel="stylesheet" href="register.css"> <!-- peut etre à retirer-->
+    <link rel="stylesheet" href="../../src/element/header.css">
 </head>
 
 <body>
-    <!-- le css n'etait pas appliqué au rechargement de la page après l'injection du php donc on ajoute le css ici au lieu du fichier externe-->
-    <style>
-        p {
-            font-family: "Google Sans", sans-serif;
-            font-weight: bold;
-            color: rgb(73, 73, 73);
-        }
-    </style>
+
+    <?php
+    include('../../src/element/header.html');
+    ?>
 
     <?php
         include('../../src/bin/account/createAccount.php');
