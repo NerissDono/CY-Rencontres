@@ -1,0 +1,93 @@
+/* user.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Réinitialisation de base */
+body, h1, h2, h3, p, form, input, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Style général du corps de la page */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    margin: 0;
+    font-family: 'Poppins';
+    background: linear-gradient(to right, #EF4765, rgb(255, 154, 147)); /* Dégradé étendu sur toute la largeur */
+    overflow-x: hidden; /* Empêcher le défilement horizontal */
+}
+
+main {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    margin-top: 20px; /* Ajouter de l'espace en haut */
+    margin-bottom: 20px; /* Ajouter de l'espace en bas */
+}
+
+/* Style des sections */
+#profil, #recentProfiles, #placeholder {
+    padding: 10px;
+    flex: 1; /* Toutes les sections occupent autant d'espace que possible */
+    color: aliceblue; /* Changement de couleur du texte */
+    border: solid 5px aliceblue;
+    border-radius: 20px;
+    margin: 10px; /* Ajouter de l'espace entre les sections */
+}
+
+#profil {
+    width: 25%;
+}
+
+#profil img {
+    margin: 10px auto;
+}
+
+#publicSection, #privateSection {
+    margin-bottom: 20px;
+}
+
+#recentProfiles {
+    width: 50%;
+}
+
+#recentProfilesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    overflow-y: scroll;
+    max-height: calc(100vh - 100px); /* Ajuster en fonction de la taille du header et du footer */
+}
+
+.profile-box {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    width: 100%; /* Ajuster la largeur pour occuper toute la largeur de la section parente */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#placeholder p {
+    text-align: center;
+    color: #666;
+    padding: 10px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    color: lightgray;
+    background-color: rgb(10, 24, 29);
+    width: 100%;
+    margin-top: 20px; /* Ajouter de l'espace en haut */
+}

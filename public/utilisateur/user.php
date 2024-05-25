@@ -1,9 +1,30 @@
-<?php 
-
+<?php
 session_start();
+include_once '../../src/bin/utilitaries/getRecentProfiles.php';
 
-//affectation des champs publics du profil
+/*include_once '../../src/bin/utilitaries/searchUsername.php';
 
+// Vérification des paramètres de la requête GET
+if (isset($_GET['username'])) {
+    // Désactiver la sortie des erreurs pour éviter les espaces ou les messages d'erreur avant les headers
+    ob_start();
+
+    $username = trim($_GET['username']);
+    if ($username !== '') {
+        $searchDir = '../../data/users'; // Répertoire de base pour la recherche
+        $matchedProfiles = searchUsernameInProfiles($searchDir, $username);
+        header('Content-Type: application/json');
+        echo json_encode($matchedProfiles);
+    } else {
+        echo json_encode([]);
+    }
+
+    // Nettoyer le tampon de sortie et désactiver la capture
+    ob_end_flush();
+    exit; // Assurez-vous de terminer le script après l'envoi de la réponse JSON
+}*/
+
+// Affectation des champs publics du profil
 $pseudo = $_SESSION['id'];
 $password = $_SESSION['password'];
 $birthdate = $_SESSION['birthdate'];
@@ -11,10 +32,13 @@ $gender = $_SESSION['gender'];
 if (isset($_SESSION['height'])) { $height = $_SESSION['height']; }
 if (isset($_SESSION['bio'])) { $bio = $_SESSION['bio']; }
 
-//affectation des champs privés du profil
-
+// Affectation des champs privés du profil
 $lastname = $_SESSION['lastname'];
 $name = $_SESSION['name'];
+
+// Récupération des profils les plus récents
+$recentProfiles = getRecentProfiles(__DIR__ . '/../../data/users');
+
 ?>
 
 <!DOCTYPE html>
@@ -23,12 +47,14 @@ $name = $_SESSION['name'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil Utilisateur</title>
+    <link rel="stylesheet" href="user.css">
+    <link rel="stylesheet" href="../../src/element/header.css">
 </head>
 <body>
-    
-    <header>
-        <h1>Bienvenue sur notre site de rencontres</h1>
-    </header>
+    <?php
+        include ('../../src/element/header.html');
+    ?>
+    <main>
         <section id="profil">
             <h2>Mon Profil</h2>
             <div id="publicSection">
@@ -38,13 +64,13 @@ $name = $_SESSION['name'];
                     <label for="pseudo">Pseudonyme:</label>
                     <input type="text" id="pseudo" name="pseudo" value="<?php echo htmlspecialchars($pseudo); ?>" disabled><br>
                     <label for="sexe">Genre</label>
-                    <input type="text" id="sexe" name="sexe" value="<?php echo htmlspecialchars($gender);?>"disabled><br>
+                    <input type="text" id="sexe" name="sexe" value="<?php echo htmlspecialchars($gender);?>" disabled><br>
                     <label for="naissance">Date de naissance:</label>
                     <input type="text" id="naissance" name="naissance" value="<?php echo htmlspecialchars($birthdate);?>" disabled><br>
                     <label for="taille">Taille (cm):</label>
                     <input type="number" id="taille" name="taille" disabled><br>
                     <label for="bio">Bio (Décrivez-vous) :</label>
-                    <textarea id="bio" name="bio" disabled></textarea><br>
+                    <textarea id="bio" name="bio" disabled><?php echo htmlspecialchars($bio); ?></textarea><br>
                     <input type="button" value="Modifier" onclick="modifierProfil('publicForm')">
                     <input type="submit" value="Enregistrer" name="editPublic" style="display: none;">
                 </form>
@@ -65,39 +91,28 @@ $name = $_SESSION['name'];
             <button onclick="togglePrivateSection()">Afficher les Informations Privées</button>
         </section>
 
-    <?php 
-        
-    ?>
-
-        <section id="recherche">
-            <h2>Recherche de Profils</h2>
-            <form action="#" method="get">
-                <label for="keywords">Mots-clés :</label>
-                <input type="text" id="keywords" name="keywords"><br>
-                <input type="submit" value="Rechercher">
-            </form>
-            <div id="resultats">
-                <!-- Affichage des résultats de la recherche -->
+        <section id="recentProfiles">
+            <h2>Profils les Plus Récents</h2>
+            <div id="recentProfilesContainer">
+                <?php foreach ($recentProfiles as $profile): ?>
+                    <div class="profile-box">
+                        <strong>Nom d'utilisateur :</strong> <?php echo htmlspecialchars($profile['username']); ?><br>
+                        <strong>Genre :</strong> <?php echo htmlspecialchars($profile['gender']); ?><br>
+                        <strong>Année de naissance :</strong> <?php echo htmlspecialchars($profile['year']); ?><br>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
 
-        <section id="abonnements">
-            <h2>Offres d'Abonnement</h2>
-            <ul>
-                <li>Abonnement Mensuel: 8€/mois</li>
-                <li>Abonnement Trimestriel: 20€/trimestre</li>
-                <li>Abonnement Annuel: 50€/an</li>
-                <li>Version d'Essai: 1.50€ pour 24h d'accès complet</li>
-            </ul>
-            <button onclick="choisirAbonnement()">Choisir un Abonnement</button>
+        <section id="placeholder">
+            <p>Section de messages privés (à venir)</p>
         </section>
-
+    </main>
     <footer>
         <p>&copy; 2024 CY Meet</p>
     </footer>
 
     <script>
-
         function modifierProfil(formId) {
             // Activer les champs pour permettre la modification
             document.querySelectorAll(`#${formId} input, #${formId} textarea`).forEach(input => {
@@ -111,16 +126,6 @@ $name = $_SESSION['name'];
                 event.preventDefault();
                 sauvegarderProfil(formId);
             });
-        }
-
-        function sauvegarderProfil(formId) {
-            // Insérer ici la logique pour sauvegarder les modifications du profil
-            // Une fois les modifications sauvegardées, désactivez les champs et réinitialisez le bouton
-            document.querySelectorAll(`#${formId} input, #${formId} textarea`).forEach(input => {
-                input.disabled = true;
-            });
-            document.querySelector(`#${formId} input[type="button"]`).style.display = "inline-block";
-            document.querySelector(`#${formId} input[type="submit"]`).style.display = "none";
         }
 
         function togglePrivateSection() {
