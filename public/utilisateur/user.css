@@ -40,10 +40,14 @@ main {
 
 #profil {
     width: 25%;
+    overflow-y: auto; /* Rendre la section scrollable */
+    max-height: calc(100vh - 40px); /* Ajuster la hauteur maximale pour tenir compte des marges */
 }
 
 #profil img {
     margin: 10px auto;
+    width: 200px;
+    height: 200px;
 }
 
 #publicSection, #privateSection {
@@ -90,4 +94,49 @@ footer {
     background-color: rgb(10, 24, 29);
     width: 100%;
     margin-top: 20px; /* Ajouter de l'espace en haut */
+}
+
+/* Styles pour les formulaires de la section profil */
+#profil label {
+    font-size: 1.2em; /* Augmenter la taille du texte des labels */
+    display: block; /* S'assurer que les labels sont des blocs pour un bon alignement */
+    margin-bottom: 5px; /* Ajouter un espace en bas des labels */
+}
+
+#profil input, #profil textarea {
+    font-size: 1.1em; /* Augmenter la taille du texte des inputs et des textareas */
+    width: calc(100% - 20px); /* Prendre toute la largeur moins les marges */
+    padding: 10px; /* Ajouter un padding pour une meilleure lisibilité */
+    margin-bottom: 10px; /* Ajouter un espace en bas des inputs */
+    border: 1px solid #ccc; /* Ajouter une bordure pour les inputs */
+    border-radius: 5px; /* Arrondir les coins des inputs */
+    box-sizing: border-box; /* Inclure le padding et la bordure dans la largeur totale */
+}
+
+#profil input:disabled, #profil textarea:disabled {
+    color: aliceblue; /* Changer la couleur du texte */
+}
+
+/* S'assurer que les formulaires prennent toute la largeur disponible */
+#publicForm, #privateForm {
+    display: flex;
+    flex-direction: column; /* Afficher les enfants en colonne */
+    align-items: flex-start; /* Aligner les enfants à gauche */
+}
+
+/* Style des boutons */
+#profil input[type="button"], #profil input[type="submit"], #profil button {
+    font-size: 1em;
+    padding: 10px 20px; /* Ajouter un padding pour les boutons */
+    background-color: #EF4765; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    border: none; /* Enlever la bordure par défaut */
+    border-radius: 5px; /* Arrondir les coins */
+    cursor: pointer; /* Curseur en forme de main pour les boutons */
+    margin-top: 10px; /* Ajouter un espace en haut des boutons */
+    transition: background-color 0.3s ease; /* Transition pour l'effet de survol */
+}
+
+#profil input[type="button"]:hover, #profil input[type="submit"]:hover, #profil button:hover {
+    background-color: #D43F4B; /* Couleur de fond au survol */
 }

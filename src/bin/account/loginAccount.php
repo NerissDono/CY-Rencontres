@@ -16,8 +16,7 @@ function loginAccount($email, $password)
         $fileContent = getInfo($dir . "/profile.txt");
         if (password_verify($password, $fileContent[6]))
         {
-            // lance la session et affecte les variables de session
-            session_start();
+            // affecte les variables de session
             $_SESSION["id"] = $fileContent[0];
             $_SESSION["gender"] = $fileContent[1];
             $_SESSION["email"] = $email;

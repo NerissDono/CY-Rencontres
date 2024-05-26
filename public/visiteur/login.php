@@ -34,15 +34,10 @@ if (isset($_POST["ok"]))
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // Si les identifiants sont ceux spécifiés, redirige vers la page spécifiée
-    if ($email === "admin@example.com" && $password === "password123") {
-        echo "<script>window.location.replace('../admin/admin.php');</script>";
-    } else {
-        // Sinon, vérifie l'authentification normalement
-        if (loginAccount($email, $password))
-        {
-            echo "<script>window.location.replace('../utilisateur/user.php');</script>";
-        }
+    // vérifie l'authentification 
+    if (loginAccount($email, $password))
+    {
+        echo "<script>window.location.replace('../utilisateur/user.php');</script>";
     }
 }
 ?>

@@ -2,43 +2,83 @@
 session_start();
 include_once '../../src/bin/utilitaries/getRecentProfiles.php';
 
-/*include_once '../../src/bin/utilitaries/searchUsername.php';
+// Chemin vers le fichier profile.txt
+$profileFile = '../../data/users/' . $_SESSION['email'] . '/profile.txt';
 
-// Vérification des paramètres de la requête GET
-if (isset($_GET['username'])) {
-    // Désactiver la sortie des erreurs pour éviter les espaces ou les messages d'erreur avant les headers
-    ob_start();
+// Lecture des informations du fichier profile.txt
+if (!file_exists($profileFile)) {
+    die('Fichier de profil non trouvé.');
+}
 
-    $username = trim($_GET['username']);
-    if ($username !== '') {
-        $searchDir = '../../data/users'; // Répertoire de base pour la recherche
-        $matchedProfiles = searchUsernameInProfiles($searchDir, $username);
-        header('Content-Type: application/json');
-        echo json_encode($matchedProfiles);
-    } else {
-        echo json_encode([]);
-    }
+$profileData = file($profileFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-    // Nettoyer le tampon de sortie et désactiver la capture
-    ob_end_flush();
-    exit; // Assurez-vous de terminer le script après l'envoi de la réponse JSON
-}*/
+// Charger les informations du profil dans les variables
+$pseudo = $profileData[0];
+$gender = $profileData[1];
+$birthdate = $profileData[4];
+$lastname = $profileData[2];
+$name = $profileData[3];
+$hashedPassword = $profileData[6];
+$height = isset($profileData[7]) ? $profileData[7] : '';
+$bio = isset($profileData[8]) ? $profileData[8] : '';
 
-// Affectation des champs publics du profil
-$pseudo = $_SESSION['id'];
-$password = $_SESSION['password'];
-$birthdate = $_SESSION['birthdate'];
-$gender = $_SESSION['gender'];
-if (isset($_SESSION['height'])) { $height = $_SESSION['height']; }
-if (isset($_SESSION['bio'])) { $bio = $_SESSION['bio']; }
-
-// Affectation des champs privés du profil
-$lastname = $_SESSION['lastname'];
-$name = $_SESSION['name'];
+// Convertir la date de naissance au format YYYY-MM-DD si elle n'est pas vide
+if (!empty($birthdate)) {
+    $birthdate = date('Y-m-d', strtotime($birthdate));
+}
 
 // Récupération des profils les plus récents
 $recentProfiles = getRecentProfiles(__DIR__ . '/../../data/users');
 
+// Initialiser le message d'erreur
+$error = '';
+
+// Traitement du formulaire si les données sont soumises via POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['editPublic'])) {
+        // Récupération des données du formulaire public
+        $height = $_POST['taille'];
+        $bio = $_POST['bio'];
+
+        // Mise à jour du tableau avec les nouvelles informations
+        $profileData[7] = $height;
+        $profileData[8] = $bio;
+    }
+
+    if (isset($_POST['editPrivate'])) {
+        // Récupération des données du formulaire privé
+        $lastname = $_POST['lastname'];
+        $name = $_POST['name'];
+        $currentPassword = $_POST['currentPassword'];
+        $newPassword = $_POST['newPassword'];
+
+        // Vérifier le mot de passe actuel
+        if (password_verify($currentPassword, $hashedPassword)) {
+            // Mise à jour du tableau avec les nouvelles informations
+            $profileData[2] = $lastname;
+            $profileData[3] = $name;
+
+            // Hacher le nouveau mot de passe avant de le stocker
+            if (!empty($newPassword)) {
+                $profileData[6] = password_hash($newPassword, PASSWORD_DEFAULT);
+            }
+
+            // Écriture des données dans le fichier profile.txt
+            if (!is_writable($profileFile)) {
+                die('Impossible d\'écrire dans le fichier de profil.');
+            }
+
+            $newProfileData = implode("\n", $profileData);
+            file_put_contents($profileFile, $newProfileData);
+
+            // Redirection pour éviter la resoumission du formulaire
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            $error = 'Mot de passe actuel incorrect.';
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -52,43 +92,56 @@ $recentProfiles = getRecentProfiles(__DIR__ . '/../../data/users');
 </head>
 <body>
     <?php
-        include ('../../src/element/header.html');
+        // si l'utilisateur connecté est l'admin alors il a accès au dashboard administrateur dans la navbar
+        if ($_SESSION['email'] == "admin1@cupidquest.fr")
+        {
+            include('../../src/element/headerAdmin.html');
+        }
+        else
+        {
+            include('../../src/element/header.html');
+        }
     ?>
     <main>
         <section id="profil">
             <h2>Mon Profil</h2>
             <div id="publicSection">
                 <h3>Informations Publiques</h3>
-                <form id="publicForm">
+                <form id="publicForm" method="post">
                     <img id="logo" src="../../data/img/logo.png" alt="mehdi"/><br>
                     <label for="pseudo">Pseudonyme:</label>
                     <input type="text" id="pseudo" name="pseudo" value="<?php echo htmlspecialchars($pseudo); ?>" disabled><br>
                     <label for="sexe">Genre</label>
-                    <input type="text" id="sexe" name="sexe" value="<?php echo htmlspecialchars($gender);?>" disabled><br>
+                    <input type="text" id="sexe" name="sexe" value="<?php echo htmlspecialchars($gender); ?>" disabled><br>
                     <label for="naissance">Date de naissance:</label>
-                    <input type="text" id="naissance" name="naissance" value="<?php echo htmlspecialchars($birthdate);?>" disabled><br>
+                    <input type="text" id="naissance" name="naissance" value="<?php echo htmlspecialchars($birthdate); ?>" disabled><br>
                     <label for="taille">Taille (cm):</label>
-                    <input type="number" id="taille" name="taille" disabled><br>
+                    <input type="number" id="taille" name="taille" value="<?php echo htmlspecialchars($height); ?>" disabled><br>
                     <label for="bio">Bio (Décrivez-vous) :</label>
                     <textarea id="bio" name="bio" disabled><?php echo htmlspecialchars($bio); ?></textarea><br>
                     <input type="button" value="Modifier" onclick="modifierProfil('publicForm')">
-                    <input type="submit" value="Enregistrer" name="editPublic" style="display: none;">
+                    <input type="submit" value="Enregistrer" name="editPublic" style="display:none;">
                 </form>
             </div>
             <div id="privateSection" style="display: none;">
                 <h3>Informations Privées</h3>
-                <form id="privateForm">
+                <form id="privateForm" method="post">
                     <label for="lastname">Nom:</label>
-                    <input type="text" id="nom" name="lastname" value="<?php echo htmlspecialchars($lastname)?>" disabled><br>
+                    <input type="text" id="lastname" name="lastname" value="<?php echo htmlspecialchars($lastname); ?>" disabled><br>
                     <label for="name">Prénom:</label>
-                    <input type="text" id="prénom" name="name" value="<?php echo htmlspecialchars($name)?>" disabled><br>
-                    <label for="password">Mot de Passe:</label>
-                    <input type="password" id="password" name="password" value="<?php echo htmlspecialchars($password)?>" disabled><br>
+                    <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" disabled><br>
+                    <label for="currentPassword">Mot de Passe Actuel:</label>
+                    <input type="password" id="currentPassword" name="currentPassword" required disabled><br>
+                    <label for="newPassword">Nouveau Mot de Passe:</label>
+                    <input type="password" id="newPassword" name="newPassword" disabled><br>
+                    <?php if (!empty($error)): ?>
+                        <p style="color: red; background-color: aliceblue;"><?php echo $error; ?></p>
+                    <?php endif; ?>
                     <input type="button" value="Modifier" onclick="modifierProfil('privateForm')">
-                    <input type="submit" value="Enregistrer les informations privées" style="display: none;">
+                    <input type="submit" value="Enregistrer les informations privées" name="editPrivate" style="display:none;">
                 </form>
             </div>
-            <button onclick="togglePrivateSection()">Afficher les Informations Privées</button>
+            <button class="toggle-button" onclick="togglePrivateSection()">Afficher les Informations Privées</button>
         </section>
 
         <section id="recentProfiles">
@@ -109,7 +162,7 @@ $recentProfiles = getRecentProfiles(__DIR__ . '/../../data/users');
         </section>
     </main>
     <footer>
-        <p>&copy; 2024 CY Meet</p>
+        <p>&copy; 2024 Cupid Quest</p>
     </footer>
 
     <script>
@@ -121,16 +174,11 @@ $recentProfiles = getRecentProfiles(__DIR__ . '/../../data/users');
             // Modifier le texte du bouton
             document.querySelector(`#${formId} input[type="button"]`).style.display = "none";
             document.querySelector(`#${formId} input[type="submit"]`).style.display = "inline-block";
-            // Ajouter un événement pour enregistrer les modifications
-            document.getElementById(formId).addEventListener('submit', function(event) {
-                event.preventDefault();
-                sauvegarderProfil(formId);
-            });
         }
 
         function togglePrivateSection() {
             var privateSection = document.getElementById('privateSection');
-            var button = document.querySelector('#profil button');
+            var button = document.querySelector('.toggle-button');
             
             if (privateSection.style.display === 'none') {
                 privateSection.style.display = 'block';
