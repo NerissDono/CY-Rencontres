@@ -2,8 +2,9 @@
 session_start();
 include_once '../../src/bin/utilitaries/getRecentProfiles.php';
 
-// Chemin vers le fichier profile.txt
+// Chemin vers le fichier profile.txt et bio.txt
 $profileFile = '../../data/users/' . $_SESSION['email'] . '/profile.txt';
+$bioFile = '../../data/users/' . $_SESSION['email'] . '/bio.txt';
 
 // Lecture des informations du fichier profile.txt
 if (!file_exists($profileFile)) {
@@ -11,6 +12,13 @@ if (!file_exists($profileFile)) {
 }
 
 $profileData = file($profileFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+// Lecture des informations du fichier bio.txt
+if (!file_exists($bioFile)) {
+    $bio = '';
+} else {
+    $bio = file_get_contents($bioFile);
+}
 
 // Charger les informations du profil dans les variables
 $pseudo = $profileData[0];
@@ -20,7 +28,6 @@ $lastname = $profileData[2];
 $name = $profileData[3];
 $hashedPassword = $profileData[6];
 $height = isset($profileData[7]) ? $profileData[7] : '';
-$bio = isset($profileData[8]) ? $profileData[8] : '';
 
 // Convertir la date de naissance au format YYYY-MM-DD si elle n'est pas vide
 if (!empty($birthdate)) {
@@ -39,10 +46,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Récupération des données du formulaire public
         $height = $_POST['taille'];
         $bio = $_POST['bio'];
+        $birthdate = $_POST['naissance'];
 
         // Mise à jour du tableau avec les nouvelles informations
+        $profileData[4] = $birthdate;
         $profileData[7] = $height;
-        $profileData[8] = $bio;
+
+        // Écriture des données dans le fichier profile.txt
+        if (!is_writable($profileFile)) {
+            die('Impossible d\'écrire dans le fichier de profil.');
+        }
+
+        $newProfileData = implode("\n", $profileData);
+        file_put_contents($profileFile, $newProfileData);
+
+        // Écriture de la biographie dans le fichier bio.txt
+        if (!is_writable($bioFile)) {
+            die('Impossible d\'écrire dans le fichier de biographie.');
+        }
+
+        file_put_contents($bioFile, str_replace("\r\n", "\n", $bio)); // Normaliser les sauts de ligne
+
+        // Redirection pour éviter la resoumission du formulaire
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
     }
 
     if (isset($_POST['editPrivate'])) {
@@ -57,6 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Mise à jour du tableau avec les nouvelles informations
             $profileData[2] = $lastname;
             $profileData[3] = $name;
+            $profileData[4] = $birthdate; // Mettre à jour la date de naissance
 
             // Hacher le nouveau mot de passe avant de le stocker
             if (!empty($newPassword)) {
@@ -114,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="sexe">Genre</label>
                     <input type="text" id="sexe" name="sexe" value="<?php echo htmlspecialchars($gender); ?>" disabled><br>
                     <label for="naissance">Date de naissance:</label>
-                    <input type="text" id="naissance" name="naissance" value="<?php echo htmlspecialchars($birthdate); ?>" disabled><br>
+                    <input type="date" id="naissance" name="naissance" value="<?php echo htmlspecialchars($birthdate); ?>" disabled><br>
                     <label for="taille">Taille (cm):</label>
                     <input type="number" id="taille" name="taille" value="<?php echo htmlspecialchars($height); ?>" disabled><br>
                     <label for="bio">Bio (Décrivez-vous) :</label>

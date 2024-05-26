@@ -19,6 +19,8 @@ function createAccount($id, $gender, $name, $lastname, $birthdate, $email, $pass
                 fwrite($file, $birthdate ."\n");
                 fwrite($file, $email ."\n");
                 fwrite($file, password_hash($password, PASSWORD_DEFAULT). "\n");
+                //création du fichier de biographie qui sera utilisée pour la modifier dans la section profil de la page utilisateur
+                file_put_contents($dir . '/bio.txt', '');
                 fclose($file);
 
                 //inscription réussie
