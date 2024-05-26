@@ -5,6 +5,8 @@ include_once '../../src/bin/utilitaries/getRecentProfiles.php';
 // Chemin vers le fichier profile.txt et bio.txt
 $profileFile = '../../data/users/' . $_SESSION['email'] . '/profile.txt';
 $bioFile = '../../data/users/' . $_SESSION['email'] . '/bio.txt';
+$profilePicDir = '../../data/users/' . $_SESSION['email'] . '/';
+$profilePicFile = $profilePicDir . 'profile_pic';
 
 // Lecture des informations du fichier profile.txt
 if (!file_exists($profileFile)) {
@@ -66,6 +68,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         file_put_contents($bioFile, str_replace("\r\n", "\n", $bio)); // Normaliser les sauts de ligne
+
+        // Gestion du téléchargement de l'image
+        if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] == UPLOAD_ERR_OK) {
+            $allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
+            $fileType = $_FILES['profilePic']['type'];
+            if (in_array($fileType, $allowedTypes)) {
+                // Déplacer le fichier téléchargé vers le dossier utilisateur
+                $extension = pathinfo($_FILES['profilePic']['name'], PATHINFO_EXTENSION);
+                $destination = $profilePicFile . '.' . $extension;
+                move_uploaded_file($_FILES['profilePic']['tmp_name'], $destination);
+
+                // Supprimer les anciennes images de profil
+                foreach (glob($profilePicFile . '.*') as $oldFile) {
+                    if ($oldFile != $destination) {
+                        unlink($oldFile);
+                    }
+                }
+            } else {
+                $error = 'Type de fichier non autorisé. Veuillez sélectionner une image (png, jpg, gif).';
+            }
+        }
 
         // Redirection pour éviter la resoumission du formulaire
         header("Location: " . $_SERVER['PHP_SELF']);
@@ -135,8 +158,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Mon Profil</h2>
             <div id="publicSection">
                 <h3>Informations Publiques</h3>
-                <form id="publicForm" method="post">
-                    <img id="logo" src="../../data/img/logo.png" alt="mehdi"/><br>
+                <form id="publicForm" method="post" enctype="multipart/form-data">
+                    <label>Photo de profil:</label><br>
+                    <?php
+                        $userProfilePic = glob($profilePicFile . '.*');
+                        if (!empty($userProfilePic)) {
+                            $profilePic = $userProfilePic[0];
+                            $profilePicUrl = '../../data/users/' . $_SESSION['email'] . '/' . basename($profilePic);
+                            echo '<img id="profilePic" src="' . htmlspecialchars($profilePicUrl) . '" alt="Profile Picture" onerror="this.onerror=null;this.src=\'../../data/img/defaultpfp.jpeg\';" /><br>';
+                        } else {
+                            echo '<p id="noProfilePic">Aucune image de profil</p><br>';
+                        }
+                    ?>
+                    <input type="file" id="profilePicUpload" name="profilePic" accept="image/png, image/jpeg, image/gif" style="display:none;"><br>
                     <label for="pseudo">Pseudonyme:</label>
                     <input type="text" id="pseudo" name="pseudo" value="<?php echo htmlspecialchars($pseudo); ?>" disabled><br>
                     <label for="sexe">Genre</label>
@@ -177,9 +211,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div id="recentProfilesContainer">
                 <?php foreach ($recentProfiles as $profile): ?>
                     <div class="profile-box">
+                        <?php if (!empty($profile['profilePic'])): ?>
+                            <img src="<?php echo htmlspecialchars($profile['profilePic']); ?>" alt="Profile Picture" style="width: 100px; height: 100px;"><br>
+                        <?php else: ?>
+                            <p>Aucune image de profil</p>
+                        <?php endif; ?>
                         <strong>Nom d'utilisateur :</strong> <?php echo htmlspecialchars($profile['username']); ?><br>
                         <strong>Genre :</strong> <?php echo htmlspecialchars($profile['gender']); ?><br>
                         <strong>Année de naissance :</strong> <?php echo htmlspecialchars($profile['year']); ?><br>
+                        <strong>Taille :</strong> <?php echo htmlspecialchars($profile['height']); ?> cm<br>
+                        <strong>Bio :</strong> <?php echo nl2br(htmlspecialchars($profile['bio'])); ?><br>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -199,6 +240,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             document.querySelectorAll(`#${formId} input, #${formId} textarea`).forEach(input => {
                 input.disabled = false;
             });
+            // Afficher le champ de téléchargement de fichier si c'est le formulaire public
+            if (formId === 'publicForm') {
+                document.getElementById('profilePicUpload').style.display = 'block';
+            }
             // Modifier le texte du bouton
             document.querySelector(`#${formId} input[type="button"]`).style.display = "none";
             document.querySelector(`#${formId} input[type="submit"]`).style.display = "inline-block";
