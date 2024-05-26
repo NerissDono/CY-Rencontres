@@ -80,3 +80,58 @@ main {
 #user-list button:hover {
     background-color: #d14056;
 }
+
+#edit-user {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+#edit-user h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+#edit-user form {
+    display: flex;
+    flex-direction: column;
+}
+
+#edit-user label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#edit-user input, #edit-user textarea, #edit-user button {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#edit-user textarea {
+    resize: vertical;
+}
+
+#edit-user button {
+    background-color: #EF4765;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#edit-user button:hover {
+    background-color: #d14056;
+}
+
+#edit-user button[type="button"] {
+    background-color: #aaa;
+    margin-left: 10px;
+}
+
+#edit-user button[type="button"]:hover {
+    background-color: #888;
+}

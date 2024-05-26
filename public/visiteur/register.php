@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lovel-Up</title>
+    <title>Cupid Quest</title>
     <link rel="stylesheet" href="register.css"> <!-- peut etre à retirer-->
     <link rel="stylesheet" href="../../src/element/header.css">
 </head>

@@ -1,20 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+
 body {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f0f0;
 }
-
-label {
-    font-weight: bold;
-    color: rgb(73, 73, 73);
-}
-input {
-    margin-bottom: 10px;
     
+form {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+    
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+    
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+input[type="date"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+    
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: linear-gradient(to right, #EF4765, rgb(255, 154, 147));
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+    
+button[type="submit"]:hover {
+    background: linear-gradient(to right, #FF6B81, #FF9A93);
 }
 
-p {
-    font-family: "Google Sans", sans-serif;
-    font-weight: bold;
-    color: rgb(73, 73, 73);
+.err-message{
+    display: flex;
+    justify-content: center;
 }

@@ -29,12 +29,12 @@ function loginAccount($email, $password)
         }
         else
         {
-            echo "<span class='' >Mot de passe incorrect</span>";
+            echo "<span class='err-message'>Mot de passe incorrect</span>";
         }
     }
     else
     {
-        echo "<span class='' >Ce compte n'existe pas ! Inscrivez-vous <a href='../../../public/visiteur/register.php'>ici</a>.</span>";
+        echo "<span class='err-message'>Ce compte n'existe pas ! Inscrivez-vous <a href='../../../public/visiteur/register.php'> ici</a>.</span>";
     }
 
     return false;

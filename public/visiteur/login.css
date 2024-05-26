@@ -1,37 +1,58 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 body {
-    font-family: 'Poppins';
-    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
 }
-
-label {
-    font-weight: bold;
-    color: rgb(73, 73, 73);
-}
-
 
 .container {
-    display: flex ;
+    width: 50%;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+form {
+    display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 50vh;
 }
 
-.mail{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Style des champs de formulaire */
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-.mdp{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
-.logbtn{
+
+.logbtn {
+    text-align: center;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    background: linear-gradient(to right, #EF4765, rgb(255, 154, 147));
+    color: aliceblue;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(to right, #EF4765, rgb(255, 154, 147));
+}
+
+.err-message{
     display: flex;
     justify-content: center;
-    align-items: center;
 }
