@@ -230,7 +230,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sendMessage'])) {
         }
         else
         {
-            include('../../src/element/header.html');
+            include('../../src/element/headeruser.html');
         }
     ?>
     <main>
@@ -297,6 +297,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sendMessage'])) {
                     <p>Aucun profil trouvé.</p>
                 <?php else: ?>
                     <?php foreach ($recentProfiles as $profile): ?>
+                        <?php if($profile['email'] != $_SESSION['email']) :?>
                         <div class="profile-box">
                             <?php if (!empty($profile['profilePic'])): ?>
                                 <img src="<?php echo htmlspecialchars($profile['profilePic']); ?>" alt="Profile Picture" style="width: 100px; height: 100px;"><br>
@@ -309,6 +310,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sendMessage'])) {
                             <strong>Taille :</strong> <?php echo htmlspecialchars($profile['height']); ?> cm<br>
                             <strong>Bio :</strong> <?php echo nl2br(htmlspecialchars($profile['bio'])); ?><br>
                         </div>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>

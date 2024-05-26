@@ -13,7 +13,7 @@
 <body>
 
     <?php
-    include('../../src/element/header.html');
+    include('../../src/element/headerregister.html');
     ?>
 
     <?php
