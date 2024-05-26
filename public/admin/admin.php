@@ -107,6 +107,7 @@ $users = getAllUsers();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Gestion des utilisateurs</title>
     <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="../../src/element/header.css">
 </head>
 <body>
     <?php
