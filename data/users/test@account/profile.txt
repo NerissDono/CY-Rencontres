@@ -1,7 +1,0 @@
-test1
-Homme
-testlastname
-testname
-2001-03-22
-test@account
-$2y$10$KGuH.NJEDWn0ngv3zAdvcu5fWVD5mq1GKvhcSY/AwOmXt1nYEGqau
