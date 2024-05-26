@@ -5,10 +5,11 @@
     padding: 0;
     text-decoration: none;
     list-style: none;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
     width: 100%;
 }
 
@@ -16,10 +17,12 @@ header {
     height: 18vh;
     background: linear-gradient(to bottom right, #EF4765, rgb(255, 154, 147));
 }
+
 .logo {
     display: flex;
     align-items: center;
 }
+
 .logo img {
     width: 120px;
     height: auto;
@@ -32,13 +35,14 @@ header {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    box-sizing: border-box;
 }
+
 .navbar a {
     color: aliceblue;
     font-size: larger;
     font-weight: 600;
 }
+
 .navbar .logo {
     font-size: 2em;
     font-weight: bolder;

@@ -1,25 +1,22 @@
 <?php
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 // Fonction pour récupérer tous les utilisateurs à partir des fichiers
 function getAllUsers() {
     $users = array();
 
     // Chemin du dossier contenant les fichiers utilisateurs
-    $usersDirectory = '../../data/users';
+    $usersDirectory = $_SERVER['DOCUMENT_ROOT'] . '/data/users';
 
     // Vérifie si le dossier des utilisateurs existe
-    if (is_dir($usersDirectory)) {
+    if (file_exists($usersDirectory) && is_dir($usersDirectory)) {
         // Parcours des fichiers dans le dossier des utilisateurs
         $userFiles = scandir($usersDirectory);
         foreach ($userFiles as $file) {
             // Ignorer les fichiers spéciaux
-            if ($file == '.' || $file == '..') {
-                continue;
-            }
-
-            // Vérifier si le dossier utilisateur doit être exclu
-            if ($file === 'admin@example.com') {
+            if ($file == '.' || $file == '..' || $file === 'admin1@cupidquest.fr') {
                 continue;
             }
 
@@ -32,17 +29,23 @@ function getAllUsers() {
                 $lines = explode("\n", $profileData);
                 // Créer un tableau associatif avec les informations
                 $userData = array(
-                    'lastname' => $lines[2],
-                    'firstname' => $lines[3],
-                    'gender' => $lines[1],
-                    'birthdate' => $lines[4],
-                    'email' => $lines[5],
-                    'password' => $lines[6]
+                    'lastname' => isset($lines[2]) ? trim($lines[2]) : '',
+                    'firstname' => isset($lines[3]) ? trim($lines[3]) : '',
+                    'gender' => isset($lines[1]) ? trim($lines[1]) : '',
+                    'birthdate' => isset($lines[4]) ? trim($lines[4]) : '',
+                    'email' => isset($lines[5]) ? trim($lines[5]) : '',
+                    'password' => isset($lines[6]) ? trim($lines[6]) : '',
+                    'creation_time' => filemtime($profileFile) // Ajouter le temps de création du fichier
                 );
                 // Ajouter les informations de l'utilisateur au tableau
                 $users[] = $userData;
             }
         }
+
+        // Trier les utilisateurs par ordre de création (plus récents en premier)
+        usort($users, function($a, $b) {
+            return $b['creation_time'] - $a['creation_time'];
+        });
     }
 
     return $users;
@@ -50,49 +53,103 @@ function getAllUsers() {
 
 // Fonction pour supprimer un utilisateur
 function deleteUser($email) {
-    $userDirectory = '../../data/users/' . $email;
+    $usersDirectory = $_SERVER['DOCUMENT_ROOT'] . '/data/users';
 
-    // Vérifie si le dossier utilisateur existe
-    if (is_dir($userDirectory)) {
-        // Supprime le dossier utilisateur
-        $success = rrmdir($userDirectory);
-        if (!$success) {
-            // Gérer l'échec de la suppression
-            return false;
-        }
-    }
+    if (file_exists($usersDirectory) && is_dir($usersDirectory)) {
+        // Parcours des fichiers dans le dossier des utilisateurs
+        $userFiles = scandir($usersDirectory);
+        foreach ($userFiles as $file) {
+            // Ignorer les fichiers spéciaux
+            if ($file == '.' || $file == '..' || $file === 'admin1@cupidquest.fr') {
+                continue;
+            }
 
-    return true;
-}
+            // Lire le fichier profile.txt pour obtenir les informations de l'utilisateur
+            $profileFile = $usersDirectory . '/' . $file . '/profile.txt';
+            if (file_exists($profileFile)) {
+                // Lire le contenu du fichier
+                $profileData = file_get_contents($profileFile);
+                // Diviser les données en lignes
+                $lines = explode("\n", $profileData);
+                // Extraire l'adresse email de l'utilisateur
+                $userEmail = trim($lines[5]);
 
-// Fonction récursive pour supprimer un répertoire et son contenu
-function rrmdir($dir) {
-    if (is_dir($dir)) {
-        $objects = scandir($dir);
-        foreach ($objects as $object) {
-            if ($object != "." && $object != "..") {
-                if (is_dir($dir . "/" . $object)) {
-                    rrmdir($dir . "/" . $object);
-                } else {
-                    unlink($dir . "/" . $object);
+                // Vérifier si l'adresse email correspond à celle fournie
+                if ($userEmail === $email) {
+                    // Chemin du répertoire de l'utilisateur
+                    $userDirectory = $usersDirectory . '/' . $file;
+
+                    // Vérifier si c'est bien un dossier
+                    if (is_dir($userDirectory)) {
+                        // Supprimer tous les fichiers dans le répertoire de l'utilisateur
+                        $deleted = true;
+                        $files = glob("$userDirectory/*");
+                        foreach ($files as $filename) {
+                            if (!unlink($filename)) {
+                                $deleted = false;
+                            }
+                        }
+
+                        // Supprimer le répertoire de l'utilisateur
+                        if ($deleted && rmdir($userDirectory)) {
+                            return true; // Utilisateur supprimé avec succès
+                        } else {
+                            return false; // Échec de la suppression des fichiers ou du répertoire
+                        }
+                    }
                 }
             }
         }
-        rrmdir($dir);
+    }
+
+    return false; // Aucun utilisateur trouvé ou erreur lors de la suppression
+}
+
+// Fonction pour bannir un utilisateur
+function banUser($email) {
+    $banDirectory = $_SERVER['DOCUMENT_ROOT'] . '/data/ban';
+    $banFile = $banDirectory . '/bannedAccount.txt';
+
+    // Vérifie si le répertoire de bannissement existe, sinon le crée
+    if (!file_exists($banDirectory)) {
+        mkdir($banDirectory, 0755, true);
+    }
+
+    // Ajoute l'email banni dans le fichier
+    if ($handle = fopen($banFile, 'a')) {
+        fwrite($handle, $email . "\n");
+        fclose($handle);
+        return true;
+    } else {
+        return false;
     }
 }
 
-// Traitement des actions administratives
-if (isset($_POST['action'])) {
-    $action = $_POST['action'];
-    switch ($action) {
-        case 'delete_user':
-            if (isset($_POST['user_email'])) {
-                $user_email = $_POST['user_email'];
-                deleteUser($user_email); // Supprimer l'utilisateur
-            }
-            break;
-        // Ajouter d'autres actions administratives ici si nécessaire
+// Si une action de suppression ou de bannissement d'utilisateur est demandée
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Suppression d'utilisateur
+    if (isset($_POST['action']) && $_POST['action'] === 'delete_user' && isset($_POST['user_email'])) {
+        $userEmailToDelete = $_POST['user_email'];
+        if (deleteUser($userEmailToDelete)) {
+            // Rediriger vers la même page après la suppression
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            echo '<script>alert("Erreur lors de la suppression de l\'utilisateur.");</script>';
+        }
+    }
+
+    // Bannissement d'utilisateur
+    if (isset($_POST['action']) && $_POST['action'] === 'ban_user' && isset($_POST['user_email'])) {
+        $userEmailToBan = $_POST['user_email'];
+        if (banUser($userEmailToBan)) {
+            deleteUser($userEmailToBan);
+            // Rediriger vers la même page après le bannissement
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            echo '<script>alert("Erreur lors du bannissement de l\'utilisateur.");</script>';
+        }
     }
 }
 
@@ -107,14 +164,11 @@ $users = getAllUsers();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Gestion des utilisateurs</title>
     <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="../../src/element/header.css">
+    <link rel="stylesheet" href="src/element/header.css">
 </head>
 <body>
-    <?php
-    include('../../src/element/headerAdmin.html');
-    ?>
-    <header>
-
+    <?php include($_SERVER['DOCUMENT_ROOT'] . '/src/element/headerAdmin.html'); ?>
+    
     <main>
         <section id="user-list">
             <h2>Liste des utilisateurs</h2>
@@ -126,19 +180,27 @@ $users = getAllUsers();
                     <th>Genre</th>
                     <th>Date de naissance</th>
                     <th>Action</th>
+                    <th>Bannir</th>
                 </tr>
                 <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?php echo $user['email']; ?></td>
-                        <td><?php echo $user['lastname']; ?></td>
-                        <td><?php echo $user['firstname']; ?></td>
-                        <td><?php echo $user['gender']; ?></td>
-                        <td><?php echo $user['birthdate']; ?></td>
+                        <td><?php echo htmlspecialchars($user['email']); ?></td>
+                        <td><?php echo htmlspecialchars($user['lastname']); ?></td>
+                        <td><?php echo htmlspecialchars($user['firstname']); ?></td>
+                        <td><?php echo htmlspecialchars($user['gender']); ?></td>
+                        <td><?php echo htmlspecialchars($user['birthdate']); ?></td>
                         <td>
-                            <form action="" method="post">
+                            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
                                 <input type="hidden" name="action" value="delete_user">
-                                <input type="hidden" name="user_email" value="<?php echo $user['email']; ?>">
+                                <input type="hidden" name="user_email" value="<?php echo htmlspecialchars($user['email']); ?>">
                                 <button type="submit">Supprimer</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+                                <input type="hidden" name="action" value="ban_user">
+                                <input type="hidden" name="user_email" value="<?php echo htmlspecialchars($user['email']); ?>">
+                                <button type="submit">Bannir</button>
                             </form>
                         </td>
                     </tr>
