@@ -26,17 +26,26 @@
     </div>
 
     <?php
-        include ('../../src/bin/account/loginAccount.php');
+include('../../src/bin/account/loginAccount.php');
 
-        // vérifie l'envoi du formulaire avant la redirection
-        if (isset($_POST["ok"]))
+// Vérifie l'envoi du formulaire avant la redirection
+if (isset($_POST["ok"]))
+{
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+
+    // Si les identifiants sont ceux spécifiés, redirige vers la page spécifiée
+    if ($email === "admin@example.com" && $password === "password123") {
+        echo "<script>window.location.replace('../admin/admin.php');</script>";
+    } else {
+        // Sinon, vérifie l'authentification normalement
+        if (loginAccount($email, $password))
         {
-            if (loginAccount($_POST["email"], $_POST["password"]))
-            {
-                echo "<script>window.location.replace('../utilisateur/user.php');</script>";
-            }
+            echo "<script>window.location.replace('../utilisateur/user.php');</script>";
         }
-    ?>
+    }
+}
+?>
 
 
 </body>

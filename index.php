@@ -18,11 +18,11 @@
     <div class="main-content">
 
         <div class="slogan">
-            <br><br><br><br><br><br><br><br><br>
+            
             <p>U want to play, let's play</p>
-            <br><br><br>
+            
             <div class="container"><div class="register-button"><a class="register-link" href="../../public/visiteur/register.php">Créer son compte</a></div></div>
-            <br><br><br><br><br><br><br><br><br>
+            
         </div>
 
     </div>
@@ -48,5 +48,3 @@
 </body>
 
 </html>
-
-caca

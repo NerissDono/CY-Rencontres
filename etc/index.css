@@ -5,7 +5,12 @@ body {
     font-family: 'Poppins';
 }
 
+.main-content{
+    height: 100vh;
+}
+
 .main-content .slogan {
+    padding-top: 15rem;
     align-items: center;
 }
 
@@ -13,6 +18,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-bottom: 5rem;
     font-size: 80px;
     color: rgb(60, 60, 60);
         
@@ -60,5 +66,3 @@ footer{
     background-size:cover;
     padding: 7px;
 }
-
-caca
