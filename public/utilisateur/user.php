@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once '../../src/bin/utilitaries/getRecentProfiles.php';
+include_once '../../src/bin/utilitaries/findFilesMatchingStrings.php';
 
 // Chemin vers le fichier profile.txt et bio.txt
 $profileFile = '../../data/users/' . $_SESSION['email'] . '/profile.txt';
@@ -130,6 +131,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+// Filtrer les profils récents en fonction du terme de recherche
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+if (!empty($searchTerm)) {
+    $recentProfiles = array_filter($recentProfiles, function($profile) use ($searchTerm) {
+        return stripos($profile['username'], $searchTerm) !== false || stripos($profile['bio'], $searchTerm) !== false;
+    });
+}
+
+// Prend la valeur true si l'utilisateur est abonné, false sinon
+$isSubscribed = false;
+if (file_exists($profileFile)) {
+    $profileData = file($profileFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if (in_array('subscribed', $profileData)) {
+        $isSubscribed = true;
+    }
+}
+// Traitement du formulaire d'abonnement pour mettre à jour la mention 'subscribed' dans son profile.txt
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['subscription'])) {
+    $subscription = $_POST['subscription'];
+    // Mettre à jour le fichier profile.txt
+    if (!in_array('subscribed', $profileData)) {
+        file_put_contents($profileFile, "\nsubscribed", FILE_APPEND);
+    }
+    // Redirection pour éviter la resoumission du formulaire
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+// Fonction qui lit les messages à partir du fichier messages.txt
+function readMessages($filePath) {
+}
+
+// Fonction pour ajouter une conversation à la liste des conversations de l'utilisateur connecté
+function addConversation($email1, $email2) {
+    $dir1 = '../../data/users/' . $email1;
+    $dir2 = '../../data/users/' . $email2;
+    $file1 = $dir1 . '/conversations.txt';
+    $file2 = $dir2 . '/conversations.txt';
+
+    // Vérifiez d'abord si les fichiers existent
+    $file1Exists = file_exists($file1);
+    $file2Exists = file_exists($file2);
+
+    // Ouvrir les fichiers après la vérification
+    $conversationsFile1 = fopen($file1, 'a'); // Utilisez 'a' pour ajouter au fichier
+    $conversationsFile2 = fopen($file2, 'a'); // Utilisez 'a' pour ajouter au fichier
+
+    if ($file1Exists && $file2Exists) {
+        fwrite($conversationsFile1, $email2 . "\n");
+        fwrite($conversationsFile2, $email1 . "\n");
+    } else {
+        echo "<p>Erreur dans l'ajout des conversations dans la liste</p>";
+    }
+
+    fclose($conversationsFile1);
+    fclose($conversationsFile2);
+}
+
+
+
+
+// Variables pour utiliser les fonctions de conversations et messages
+
+// Traitement du formulaire d'envoi des messages
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sendMessage'])) {
+    $recipient = $_POST['recipient'];
+    $messageContent = $_POST['messageContent'];
+    $currentDate = date('Y-m-d H:i:s');
+    
+    // Append the new message to the messages.txt file
+    $newMessage = $_SESSION['email'] . ';' . $recipient . ';' . $messageContent . ';' . $currentDate . "\n";
+    file_put_contents($messagesFile, $newMessage, FILE_APPEND);
+
+    // Redirection pour éviter la resoumission du formulaire
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -208,59 +288,154 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <section id="recentProfiles">
             <h2>Profils les Plus Récents</h2>
+            <form method="get">
+                <input type="text" name="search" placeholder="Recherche par mots clés" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <input type="submit" value="Rechercher">
+            </form>
             <div id="recentProfilesContainer">
-                <?php foreach ($recentProfiles as $profile): ?>
-                    <div class="profile-box">
-                        <?php if (!empty($profile['profilePic'])): ?>
-                            <img src="<?php echo htmlspecialchars($profile['profilePic']); ?>" alt="Profile Picture" style="width: 100px; height: 100px;"><br>
-                        <?php else: ?>
-                            <p>Aucune image de profil</p>
-                        <?php endif; ?>
-                        <strong>Nom d'utilisateur :</strong> <?php echo htmlspecialchars($profile['username']); ?><br>
-                        <strong>Genre :</strong> <?php echo htmlspecialchars($profile['gender']); ?><br>
-                        <strong>Année de naissance :</strong> <?php echo htmlspecialchars($profile['year']); ?><br>
-                        <strong>Taille :</strong> <?php echo htmlspecialchars($profile['height']); ?> cm<br>
-                        <strong>Bio :</strong> <?php echo nl2br(htmlspecialchars($profile['bio'])); ?><br>
-                    </div>
-                <?php endforeach; ?>
+                <?php if (empty($recentProfiles)): ?>
+                    <p>Aucun profil trouvé.</p>
+                <?php else: ?>
+                    <?php foreach ($recentProfiles as $profile): ?>
+                        <div class="profile-box">
+                            <?php if (!empty($profile['profilePic'])): ?>
+                                <img src="<?php echo htmlspecialchars($profile['profilePic']); ?>" alt="Profile Picture" style="width: 100px; height: 100px;"><br>
+                            <?php else: ?>
+                                <p>Aucune image de profil</p>
+                            <?php endif; ?>
+                            <strong>Nom d'utilisateur :</strong> <?php echo htmlspecialchars($profile['username']); ?><br>
+                            <strong>Genre :</strong> <?php echo htmlspecialchars($profile['gender']); ?><br>
+                            <strong>Année de naissance :</strong> <?php echo htmlspecialchars($profile['year']); ?><br>
+                            <strong>Taille :</strong> <?php echo htmlspecialchars($profile['height']); ?> cm<br>
+                            <strong>Bio :</strong> <?php echo nl2br(htmlspecialchars($profile['bio'])); ?><br>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </section>
 
         <section id="placeholder">
-            <p>Section de messages privés (à venir)</p>
+            <?php if ($isSubscribed): ?>
+                <h2>Vos Messages Privés</h2>
+                <div id="conv-starter">
+                    <h2>Commencez à discuter avec des utilisateurs</h2>
+                    <form id="start-conversation" method="post">
+                        <input type="text" name="conv-name" placeholder="avec qui voulez vous commencer à parler ?">
+                        <input type="submit" value="Démarrer une conversation" name="startConversation" >
+                    </form>
+                    <?php 
+                    // Traitement du formulaire pour initialiser une conversation avec un utilisateur
+                    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['startConversation'])) {
+                    // Vérifier si le champ "conv-name" est défini dans le formulaire
+                    if (isset($_POST['conv-name']) && !empty($_POST['conv-name'])) {
+                    // Récupérer le pseudo saisi dans le champ de texte du formulaire
+                    $pseudo = $_POST['conv-name'];
+
+                    // Utiliser le pseudo comme chaîne de recherche pour trouver les fichiers correspondants
+                    $matchingFiles = findFilesMatchingString([$pseudo]);
+
+                    // Afficher les résultats ou effectuer toute autre action souhaitée
+                    if (!empty($matchingFiles)) {
+                    echo "<p>Les fichiers correspondants pour le pseudo \"$pseudo\" sont :</p>";
+                    foreach ($matchingFiles as $file) {
+                    echo "<p>$file</p>";
+                    }
+                    } else {
+                    echo "<p>Aucun fichier correspondant trouvé pour le pseudo \"$pseudo\".</p>";
+                    }
+                    } else {
+                    echo "<p>Le champ \"conv-name\" n'est pas défini ou est vide.</p>";
+                    }
+                    }
+                    ?>
+
+                </div>
+                <div id="conversations">
+                    <h2>Conversations</h2>
+                    <?php if (empty($userConversations)): ?>
+                        <p>Aucune conversation trouvée.</p>
+                    <?php else: ?>
+                    <?php foreach ($userConversations as $conversations): ?>
+                    <div class="conversations-box">
+                        
+                    </div>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <div id="sendMessage">
+                    <form method="post" id="sendMessageForm">
+                        <label for="recipient">Destinataire:</label>
+                        <input type="email" id="recipient" name="recipient" required><br>
+                        <label for="messageContent">Message:</label>
+                        <textarea id="messageContent" name="messageContent" required></textarea><br>
+                        <input type="submit" value="Envoyer" name="sendMessage">
+                    </form>
+                </div>
+            <?php else: ?>
+                <h2>Accès réservé aux abonnés</h2>
+                <div class="subscription-message">
+                    <p>Pour accéder à la messagerie privée, veuillez vous abonner :</p>
+                </div>
+                <form id="subscriptionForm" method="post">
+                    <div class="subscription-option">
+                        <input type="radio" id="subscription1minute" name="subscription" value="1minute">
+                        <label for="subscription1minute">1 minute - Gratuit</label>
+                    </div>
+                    <div class="subscription-option">
+                        <input type="radio" id="subscription1day" name="subscription" value="1day">
+                        <label for="subscription1day">1 jour - 1€</label>
+                    </div>
+                    <div class="subscription-option">
+                        <input type="radio" id="subscription1month" name="subscription" value="1month">
+                        <label for="subscription1month">1 mois - 5€</label>
+                    </div>
+                    <div class="subscription-option">
+                        <input type="radio" id="subscription1year" name="subscription" value="1year">
+                        <label for="subscription1year">1 an - 50€</label>
+                    </div>
+                    <div class="subscription-option">
+                        <input type="radio" id="subscriptionlifetime" name="subscription" value="lifetime">
+                        <label for="subscriptionlifetime">À vie - 100€</label>
+                    </div>
+                    <input type="submit" value="S'abonner">
+                </form>
+            <?php endif; ?>
         </section>
+
     </main>
     <footer>
         <p>&copy; 2024 Cupid Quest</p>
     </footer>
 
     <script>
-        function modifierProfil(formId) {
-            // Activer les champs pour permettre la modification
-            document.querySelectorAll(`#${formId} input, #${formId} textarea`).forEach(input => {
-                input.disabled = false;
-            });
-            // Afficher le champ de téléchargement de fichier si c'est le formulaire public
-            if (formId === 'publicForm') {
-                document.getElementById('profilePicUpload').style.display = 'block';
-            }
-            // Modifier le texte du bouton
-            document.querySelector(`#${formId} input[type="button"]`).style.display = "none";
-            document.querySelector(`#${formId} input[type="submit"]`).style.display = "inline-block";
+    function modifierProfil(formId) {
+        document.querySelectorAll(`#${formId} input, #${formId} textarea`).forEach(input => {
+            input.disabled = false;
+        });
+        if (formId === 'publicForm') {
+            document.getElementById('profilePicUpload').style.display = 'block';
         }
+        document.querySelector(`#${formId} input[type="button"]`).style.display = "none";
+        document.querySelector(`#${formId} input[type="submit"]`).style.display = "inline-block";
+    }
 
-        function togglePrivateSection() {
-            var privateSection = document.getElementById('privateSection');
-            var button = document.querySelector('.toggle-button');
-            
-            if (privateSection.style.display === 'none') {
-                privateSection.style.display = 'block';
-                button.textContent = 'Masquer les Informations Privées';
-            } else {
-                privateSection.style.display = 'none';
-                button.textContent = 'Afficher les Informations Privées';
-            }
+    function togglePrivateSection() {
+        var privateSection = document.getElementById('privateSection');
+        var button = document.querySelector('.toggle-button');
+        
+        if (privateSection.style.display === 'none') {
+            privateSection.style.display = 'block';
+            button.textContent = 'Masquer les Informations Privées';
+        } else {
+            privateSection.style.display = 'none';
+            button.textContent = 'Afficher les Informations Privées';
         }
+    }
+
+    function startConversation(username) {
+        // Logique pour démarrer une conversation avec l'utilisateur spécifié
+        alert('Démarrer une conversation avec ' + username);
+    }
     </script>
 </body>
 </html>

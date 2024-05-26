@@ -37,10 +37,13 @@ function createAccount($id, $gender, $name, $lastname, $birthdate, $email, $pass
                 fwrite($file, $birthdate . "\n");
                 fwrite($file, $email . "\n");
                 fwrite($file, password_hash($password, PASSWORD_DEFAULT) . "\n");
-                fclose($file);
-
                 // Création du fichier de biographie
                 file_put_contents($dir . '/bio.txt', '');
+                // Création du fichier de conversations
+                file_put_contents($dir . '/conversations.txt', '');
+                fclose($file);
+
+                
 
                 // Inscription réussie
                 echo "<div class='err-message><p>Merci de vous être inscrit, tout s'est déroulé comme prévu !<br> 
