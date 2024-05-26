@@ -43,16 +43,16 @@ function createAccount($id, $gender, $name, $lastname, $birthdate, $email, $pass
                 file_put_contents($dir . '/bio.txt', '');
 
                 // Inscription réussie
-                echo "<div class='err-message><p>Merci de vous être inscrit, tout s'est déroulé comme prévu !<br> 
+                echo "<div class='err-message'><p>Merci de vous être inscrit, tout s'est déroulé comme prévu !<br> 
                 Vous pouvez dès à présent vous connecter à Cupid Quest pour rencontrer des personnes partageant les mêmes intérêts que vous dans la rubrique <a href='./login.php'>Se connecter</a></p></div>";
             } else {
-                echo "<span class='err-message>Erreur : échec dans la création du compte</span>";
+                echo "<span class='err-message'>Erreur : échec dans la création du compte</span>";
             }
         } else {
-            echo "<span class='err-message>Mot de passe trop faible ! Intégrez au minimum : <br>
+            echo "<span class='err-message'>Mot de passe trop faible ! Intégrez au minimum : <br>
             <ul><li>6 caractères</li><li>1 Majuscule</li><li>1 Minuscule</li><li>1 Chiffre</li><li>1 Caractère Spécial</li></ul></span>";
         }
     } else {
-        echo "<span class='err-message>Ce compte existe déjà ! Connectez-vous avec votre email et votre mot de passe <a href='../../../public/visiteur/login.php'>ici</a></span>";
+        echo "<span class='err-message'>Ce compte existe déjà ! Connectez-vous avec votre email et votre mot de passe <a href='../../../public/visiteur/login.php'>ici</a></span>";
     }
 }
