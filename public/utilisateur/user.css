@@ -277,7 +277,6 @@ footer {
     width: 100%; /* S'assure que l'élément prend toute la largeur disponible */
 }
 
-
 #subscriptionForm {
     display: flex;
     flex-direction: column;
@@ -313,3 +312,71 @@ footer {
     background-color: #D43F4B; /* Couleur de fond au survol */
 }
 
+/* Styles pour la section de messagerie privée */
+#conv-starter h2,
+#conversations h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+#conv-starter,
+#conversations,
+#sendMessage {
+    width: 100%;
+    max-width: 600px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto;
+}
+
+#conv-starter input[type="text"],
+#sendMessage input[type="email"],
+#sendMessage textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#conv-starter input[type="submit"],
+#sendMessage input[type="submit"] {
+    font-size: 1em;
+    padding: 10px 20px;
+    background-color: #EF4765;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#conv-starter input[type="submit"]:hover,
+#sendMessage input[type="submit"]:hover {
+    background-color: #D43F4B;
+}
+
+#conversations .conversations-box {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    color: #333;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#conversations p {
+    display: flex;
+    justify-content: center; /* Centre le contenu horizontalement */
+    align-items: center; /* Centre le contenu verticalement */
+    width: 100%; /* Prendre toute la largeur disponible */
+    text-align: center; /* Centre le texte à l'intérieur de l'élément */
+    color: aliceblue; /* Couleur du texte */
+    font-size: 1.2em; /* Taille du texte */
+    padding: 20px; /* Padding pour l'espacement intérieur */
+    background-color: rgba(255, 255, 255, 0.1); /* Fond semi-transparent */
+    border-radius: 10px; /* Coins arrondis */
+}
